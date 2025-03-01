@@ -1,0 +1,30 @@
+from pandas import read_json, json_normalize
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Загрузка данных из JSON-файла
+file_path = 'events.json'  # Укажите путь к файлу
+with open(file_path, 'r', encoding='utf-8') as file:
+    data = read_json(file)
+
+# Преобразование данных в датафрейм, нормализуя поле "events"
+df = json_normalize(data['events'])
+
+# Просмотр первых нескольких строк датафрейма
+print(df.head())
+
+# Просмотр уникальных значений в поле "signature"
+unique_signatures = df['signature'].unique()
+print("Уникальные типы событий:", unique_signatures)
+
+# Подсчет количества событий каждого типа
+signature_counts = df['signature'].value_counts()
+print("Количество событий по типам:\n", signature_counts)
+
+# Создание графика
+plt.figure(figsize=(10, 6))
+sns.countplot(y='signature', data=df, order=df['signature'].value_counts().index)
+plt.title('Распределение событий по типам')
+plt.xlabel('Количество событий')
+plt.ylabel('Тип события')
+plt.show()
